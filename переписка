@@ -1,0 +1,270 @@
+triest
+function later() {
+  return new Promise(function(reject) {
+    reject(new Error('Unknow error'));
+  });
+}
+
+undefined
+later().then(v => console.log(v))
+
+VM490:1 Error: Unknow error
+    at <anonymous>:3:12
+    at new Promise (<anonymous>)
+    at later (<anonymous>:2:10)
+    at <anonymous>:1:1
+Promise {<resolved>: undefined}
+triest
+А вот с последним, что-то не так:
+
+function later() {
+  return new Promise(function(resolve) {
+    setTimeout(resolve("token example"), 250);
+  });
+};
+theo
+давай сначала 3
+неверное
+скинь сигнатуру new Promise
+посмотри, что у тебя не так
+reject должен обрабатываться в catch
+не в then
+triest
+Promise {<resolved>: undefined}
+__proto__: Promise
+catch: ƒ catch()
+arguments: (...)
+caller: (...)
+length: 1
+name: "catch"
+__proto__: ƒ ()
+[[Scopes]]: Scopes[0]
+constructor: ƒ Promise()
+finally: ƒ finally()
+arguments: (...)
+caller: (...)
+length: 1
+name: "finally"
+__proto__: ƒ ()
+[[Scopes]]: Scopes[0]
+then: ƒ then()
+Symbol(Symbol.toStringTag): "Promise"
+__proto__:
+constructor: ƒ Object()
+hasOwnProperty: ƒ hasOwnProperty()
+isPrototypeOf: ƒ isPrototypeOf()
+propertyIsEnumerable: ƒ propertyIsEnumerable()
+toLocaleString: ƒ toLocaleString()
+toString: ƒ toString()
+valueOf: ƒ valueOf()
+__defineGetter__: ƒ __defineGetter__()
+__defineSetter__: ƒ __defineSetter__()
+__lookupGetter__: ƒ __lookupGetter__()
+__lookupSetter__: ƒ __lookupSetter__()
+get __proto__: ƒ __proto__()
+set __proto__: ƒ __proto__()
+[[PromiseStatus]]: "resolved"
+[[PromiseValue]]: undefined
+theo
+скинь описание new Promise
+new Promise(function(resolve, reject) { ... });
+вот все, что я требую )
+найди ошибку у себя
+triest
+function later() {
+  return new Promise(function(reject, resolve) {
+	reject(new Error('Unknow error'));
+   });
+}
+Ну это явно не то.
+
+theo
+new Promise(function(resolve, reject) { ... });
+еще раз сравни свой код и сигнатуру коллбека
+в чем разница-то? )
+triest
+В порядке переменных (resolve, reject)
+theo
+почему ты их поменял?
+triest
+function later() {
+  return new Promise(function( resolve,reject,) {
+	reject(new Error('Unknow error'));
+   });
+}
+undefined
+later().then(v => console.log(v))
+
+Promise {<rejected>: Error: Unknow error
+    at <anonymous>:3:9
+    at new Promise (<anonymous>)
+    at later (<anonymou…}
+VM934:3 Uncaught (in promise) Error: Unknow error
+    at <anonymous>:3:9
+    at new Promise (<anonymous>)
+    at later (<anonymous>:2:10)
+    at <anonymous>:1:1```
+theo
+как обрабатывать reject?
+triest
+Можно вызвать функцию с обьектом Error
+
+Promise.reject(new Error("провал")).then(function(success) {
+  // не вызывается
+}, function(error) {
+  console.log(error); // печатает "провал" + Stacktrace
+  throw error; // повторно выбрасываем ошибку, вызывая новый reject
+});
+theo
+где в твоем коде обработка ошибки?
+и как ее можно сделать не через then?
+на такие мелочи очень много времени тратим (
+triest
+promise.then(onFulfilled, onRejected)
+.
+
+theo
+где в твоем коде обработка ошибки?
+и как ее можно сделать не через then?
+triest
+promise.catch(onRejected)
+theo
+верно
+что по первому вопросу
+сколько мы уже промисы учим?
+месяц? =)
+ты если что-то не понимаешь, говори сразу
+а то ты уже месяц назад сказал, что все понял )
+
+а на практике вот оно как получается
+ладно, давай дальше
+
+где в твоем коде обработка ошибки?
+function later() {
+  return new Promise(function( resolve,reject,) {
+	reject(new Error('Unknow error'));
+   });
+}
+undefined
+later().then(v => console.log(v))
+сделай ее двумя способами, как описал выше
+triest
+function later() {
+  return new Promise(function( resolve,reject,) {
+	reject(new Error('Unknow error'));
+   }).catch(console.log('catch'));
+}
+theo
+ну что за дичь =)
+функция later возвращает промис
+обработка ошибок вне ее сделай плиз )
+ты должен сам быть собой недоволен и еще раз все прочитать про промисы
+я просто хз, как тебе уже объяснить )
+простейшие примеры ты делаешь
+но чуть шаг в сторону - уже все (
+соберись, Дима =)
+triest
+p =  new Promise(function(resolve, reject) {
+    reject(new Error('Unknow error'));
+  });
+
+p.catch(alert);
+theo
+угу
+теперь первым способом
+как через then обработать?
+ошибку
+triest
+promise.then(null, onRejected)
+theo
+p =  new Promise(function(resolve, reject) {
+reject(new Error('Unknow error'));
+});
+обработай вот тут
+ошибку через then
+triest
+p.then(null, alert)
+theo
+угу
+запомнил?
+triest
+Запишу.
+theo
+сделай 5 пример теперь
+triest
+
+function later() {
+  return new Promise(function(resolve) {
+    setTimeout(resolve("token example"), 250);
+  });
+};
+theo
+{token: example}
+обработай и выведи токен
+triest
+function later() {
+return new Promise(function(resolve) {
+setTimeout(resolve({ token: 'example' }), 250);
+});
+};
+theo
+оберни )
+не вижу вывода значения
+triest
+later().then(v => console.log(v.token))
+theo
+скинь вывод из консоли =)
+triest
+later().then(v => console.log(v.token))
+
+VM2782:1 example
+Promise {<resolved>: undefined}
+theo
+другое дело =)
+вернемся к твоему мержу теперь
+token = await tests.env().authToken;
+что тут не так?
+triest
+token=await test.env().then(v=>token)
+Я за парсер.
+theo
+погоди
+разберись с этим сначала
+надо уже добить
+triest
+ок
+theo
+2 дня делаем )
+причем тут then?
+твоя цель от них избавиться
+await это тоже самое, что then по сути
+triest
+res=await later()
+res.token
+res=test.env()
+token=res.token
+theo
+Верно
+Исправь и запусти тест
+theo отправил(а) изображение
+feat(acceptors_actions_log): fix acceptors_actions_log, redactoring code (!337) · Merge Requests · bigdeal : api · GitLab 2019-06-28 18-25-12.png
+Скачать feat(acceptors_actions_log): fix acceptors_actions_log, redactoring code (!337) · Merge Requests · bigdeal : api · GitLab 2019-06-28 18-25-12.png (75.04 KB)
+что тут за комменты?
+зачем их заливать?
+triest
+сейча все залью как надо
+theo
+смержи текущий дев в свою ветку
+она сильно отстает
+async function bef() {
+
+для чего тут название функции?
+
+async function aft()
+тут тоже
+не нужно, удали плиз
+theo
+пока что вижу, что не понимаешь =)
+сделай те же 5 примеров, но через async/await
+triest
+ok
