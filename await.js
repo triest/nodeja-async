@@ -62,3 +62,18 @@ async function getError() {
 }
 
 //getError();
+
+//7
+
+async function ranError() {
+  let rand = Math.random();
+  if (rand > 0.5) {
+    return "No rand error";
+  } else {
+    return await new Error("Rand  error");
+  }
+}
+
+ranError()
+  .then(v => console.log(v))
+  .catch(v => console.log(v));
