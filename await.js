@@ -28,13 +28,15 @@ function ex3() {
 async function ex31() {
   try {
     res = await ex2();
-    console.log(res.token);
+    // console.log(res.token);
   } catch (er) {
     console.log("error");
   }
 }
 
-ex31();
+ex31()
+  .then(v => console.log(v))
+  .catch(v => console.log(v));
 
 const timeout = ms => new Promise(res => setTimeout(res, ms));
 
@@ -48,20 +50,12 @@ delay();
 //6.
 
 async function newError() {
-  return new Error("Unknow error");
+  return await new Error("Unknow error");
 }
 
-newError().catch(console.log("Error"));
-
-async function getError() {
-  const { error, user } = await newError();
-
-  if (!error) {
-    console.log("error!");
-  }
-}
-
-//getError();
+newError()
+  .then(v => console.log(v))
+  .catch(v => console.log(err));
 
 //7
 
@@ -76,4 +70,4 @@ async function ranError() {
 
 ranError()
   .then(v => console.log(v))
-  .catch(v => console.log(v));
+  .catch(v => console.log(err));
