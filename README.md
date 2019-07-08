@@ -2,4 +2,4 @@
 
 
 Примеры по примисам: promise.js  <br/>
-Примиры по async await: await.js 
+Примеры по async await: await.js 
